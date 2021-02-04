@@ -4,6 +4,11 @@ const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
+const logger = require('./logger');
+const artistsRouter = require('./artists/artists-router');
+const albumsRouter = require('./albums/albums-router');
+const songsRouter = require('./songs/songs-router');
+const usersRouter = require('./users/users-router');
 
 const app = express();
 
@@ -14,6 +19,22 @@ const morganOption = (NODE_ENV === 'production')
 app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
+
+app.use(function validateBearerToken(req, res, next) {
+    const apiToken = process.env.API_TOKEN;
+    const authToken = req.get('Authorization');
+
+    if (!authToken || authToken.split(' ')[1] !== apiToken) {
+        logger.error(`Unauthorized request to path ${req.path}`);
+        return res.status(401).json({ error: 'Unauthorized request' });
+    }
+    next();
+});
+
+app.use('/api/users', usersRouter);
+app.use('/api/artists', artistsRouter);
+app.use('/api/albums', albumsRouter);
+app.use('/api/songs', songsRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello, world!');
