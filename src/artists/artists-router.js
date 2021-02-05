@@ -9,7 +9,8 @@ const jsonParser = express.json();
 
 const serializeArtist = artist => ({
     artist_id: artist.artist_id,
-    artist_name: xss(artist.artist_name)
+    artist_name: xss(artist.artist_name),
+    user_id: artist.user_id
 });
 
 artistsRouter
