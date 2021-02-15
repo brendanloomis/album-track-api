@@ -1,10 +1,11 @@
 INSERT INTO artists
-    (artist_name, user_id)
+    (artist_name)
     VALUES 
-        ('Red Velvet', 1),
-        ('NCT 127', 1),
-        ('Troye Sivan', 1),
-        ('Ariana Grande', 1),
-        ('Blackpink', 1),
-        ('Conan Gray', 1),
-        ('Wanna One', 1);
+        ('Red Velvet'),
+        ('NCT 127'),
+        ('Troye Sivan'),
+        ('Ariana Grande'),
+        ('Blackpink'),
+        ('Conan Gray'),
+        ('Wanna One'),
+        ('Selena Gomez');

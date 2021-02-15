@@ -3,7 +3,6 @@ const express = require('express');
 const logger = require('../logger');
 const xss = require('xss');
 const UsersService = require('./users-service');
-const { json } = require('express');
 
 const usersRouter = express.Router();
 const jsonParser = express.json();
@@ -14,6 +13,10 @@ const serializeUser = user => ({
     last_name: xss(user.last_name),
     username: xss(user.username),
     password: xss(user.password)
+});
+
+const serializeUsername = user => ({
+    username: xss(user.username)
 });
 
 usersRouter
@@ -55,6 +58,62 @@ usersRouter
     });
 
 usersRouter
+    .route('/login')
+    .post(jsonParser, (req, res, next) => {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            logger.error(`'username' and 'password' are required`);
+            return res.status(400).json({
+                error: { message: `Request body must contain 'username' and 'password'`}
+            });
+        }
+
+        UsersService.getUserByUsername(
+            req.app.get('db'),
+            username
+        )
+            .then(user => {
+                if (!user) {
+                    logger.error(`User not found.`);
+                    return res.status(404).json({
+                        error: { message: `User doesn't exist`}
+                    });
+                }
+        
+                if (user.password !== password) {
+                    logger.error(`Incorrect password`);
+                    return res.status(401).json({
+                        error: { message: `Incorrect password` }
+                    });
+                }
+        
+                const userInfo = {
+                    user_id: user.user_id,
+                    first_name: xss(user.first_name),
+                    last_name: xss(user.last_name),
+                    username: xss(user.username)
+                };
+        
+                return res.json(userInfo);
+            })
+            .catch(next);
+
+    });
+
+usersRouter
+    .route('/usernames')
+    .get((req, res, next) => {
+        UsersService.getAllUsernames(
+            req.app.get('db')
+        )
+            .then(usernames => {
+                res.json(usernames.map(serializeUsername));
+            })
+            .catch(next);
+    })
+
+usersRouter
     .route('/:user_id')
     .all((req, res, next) => {
         const { user_id } = req.params;
@@ -65,7 +124,7 @@ usersRouter
         )
             .then(user => {
                 if (!user) {
-                    logger.error(`User with id ${user.user_id} not found.`);
+                    logger.error(`User with id ${user_id} not found.`);
                     return res.status(404)
                         .json({
                             error: { message: `User doesn't exist` }

@@ -3,12 +3,14 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-const { NODE_ENV } = require('./config');
+const { NODE_ENV, CLIENT_ORIGIN } = require('./config');
 const logger = require('./logger');
 const artistsRouter = require('./artists/artists-router');
 const albumsRouter = require('./albums/albums-router');
 const songsRouter = require('./songs/songs-router');
 const usersRouter = require('./users/users-router');
+const usersAlbumsRouter = require('./usersalbums/usersalbums-router');
+const usersArtistsRouter = require('./usersartists/usersartists-router');
 
 const app = express();
 
@@ -18,7 +20,12 @@ const morganOption = (NODE_ENV === 'production')
 
 app.use(morgan(morganOption));
 app.use(helmet());
-app.use(cors());
+app.use(cors()
+    /*
+    cors({
+        origin: CLIENT_ORIGIN
+    })*/
+);
 
 app.use(function validateBearerToken(req, res, next) {
     const apiToken = process.env.API_TOKEN;
@@ -35,6 +42,8 @@ app.use('/api/users', usersRouter);
 app.use('/api/artists', artistsRouter);
 app.use('/api/albums', albumsRouter);
 app.use('/api/songs', songsRouter);
+app.use('/api/usersalbums', usersAlbumsRouter);
+app.use('/api/usersartists', usersArtistsRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello, world!');

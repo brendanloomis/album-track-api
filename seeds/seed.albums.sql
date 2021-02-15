@@ -14,4 +14,6 @@ INSERT INTO albums
         ('Square Up', 'K-Pop', 5),
         ('Kid Krow', 'Pop', 6),
         ('To Be One', 'K-Pop', 7),
-        ('I Promise You', 'K-Pop', 7);
+        ('I Promise You', 'K-Pop', 7),
+        ('thank u, next', 'Pop', 4),
+        ('Stars Dance', 'Pop', 8);

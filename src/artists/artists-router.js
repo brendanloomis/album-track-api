@@ -94,7 +94,7 @@ artistsRouter
         if (!artist_name) {
             logger.error(`Invalid update without required fields.`);
             return res.status(400).json({
-                error: { message: `Request body must conatin 'artist_name'` }
+                error: { message: `Request body must contain 'artist_name'` }
             });
         }
 

@@ -17,7 +17,7 @@ const UsersService = {
         return knex
             .from('users')
             .select('*')
-            .where('id', user_id)
+            .where('user_id', user_id)
             .first();
     },
 
@@ -31,6 +31,18 @@ const UsersService = {
         return knex('users')
             .where({ user_id })
             .update(newUserFields);
+    },
+
+
+    getUserByUsername(knex, username) {
+        return knex('users')
+            .select('*')
+            .where('username', username)
+            .first();
+    },
+
+    getAllUsernames(knex) {
+        return knex.select('username').from('users');
     }
 };
 

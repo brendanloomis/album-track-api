@@ -3,7 +3,6 @@ const express = require('express');
 const logger = require('../logger');
 const xss = require('xss');
 const SongsService = require('./songs-service');
-const { json } = require('express');
 
 const songsRouter = express.Router();
 const jsonParser = express.json();
@@ -37,8 +36,6 @@ songsRouter
                 });
             }
         }
-
-        // make validation to check if album exists
 
         SongsService.insertSong(
             req.app.get('db'),

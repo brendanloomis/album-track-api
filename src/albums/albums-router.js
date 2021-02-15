@@ -38,8 +38,6 @@ albumsRouter
             }
         }
 
-        // make validation to make sure artist exists
-
         AlbumsService.insertAlbum(
             req.app.get('db'),
             newAlbum
@@ -103,8 +101,6 @@ albumsRouter
                 error: { message: `Request body must contain either 'album_name', 'genre', or 'artist'`}
             });
         }
-
-        // make validation to make sure artist exists
 
         AlbumsService.updateAlbum(
             req.app.get('db'),
