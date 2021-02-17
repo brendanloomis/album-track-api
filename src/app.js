@@ -20,10 +20,11 @@ const morganOption = (NODE_ENV === 'production')
 
 app.use(morgan(morganOption));
 app.use(helmet());
-app.use(cors({
+/*app.use(cors({
         origin: CLIENT_ORIGIN
     })
-);
+);*/
+app.use(cors());
 
 // check if API key is correct
 app.use(function validateBearerToken(req, res, next) {
