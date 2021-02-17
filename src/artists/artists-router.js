@@ -7,6 +7,7 @@ const xss = require('xss');
 const artistsRouter = express.Router();
 const jsonParser = express.json();
 
+// serializes artist information to protect from xss attacks
 const serializeArtist = artist => ({
     artist_id: artist.artist_id,
     artist_name: xss(artist.artist_name),
@@ -28,6 +29,7 @@ artistsRouter
         const { artist_name } = req.body;
         const newArtist = { artist_name };
 
+        // returns an error if required field isn't in request
         if (!artist_name) {
             logger.error(`'artist_name' is required`);
             return res.status(400).json({
@@ -59,6 +61,7 @@ artistsRouter
             artist_id
         )
             .then(artist => {
+                // return a 404 error if artist isn't found
                 if (!artist) {
                     logger.error(`Artist with id ${artist_id} not found.`);
                     return res.status(404).json({
@@ -91,6 +94,7 @@ artistsRouter
         const artistToUpdate = { artist_name };
         const { artist_id } = req.params;
 
+        // returns an error if request doesn't contain any required fields
         if (!artist_name) {
             logger.error(`Invalid update without required fields.`);
             return res.status(400).json({

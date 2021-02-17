@@ -7,6 +7,7 @@ const UsersArtistsService = require('./usersartists-service');
 const usersArtistsRouter = express.Router();
 const jsonParser = express.json();
 
+// serializes user artist information to protect from xss attacks
 const serializeUserArtist = userArtist => ({
     usersartists_id: userArtist.usersartists_id,
     user_id: userArtist.user_id,
@@ -17,8 +18,10 @@ const serializeUserArtist = userArtist => ({
 usersArtistsRouter
     .route('/')
     .get((req, res, next) => {
+        // get user id from the query
         const { userId } = req.query;
 
+        // return an error if the user id isn't supplied
         if(!userId) {
             logger.error(`userId query is required`);
             return res.status(400).json({
@@ -28,6 +31,7 @@ usersArtistsRouter
             });
         }
 
+        // return the user's artists based on the user id
         UsersArtistsService.getUsersArtists(
             req.app.get('db'),
             userId
@@ -41,6 +45,7 @@ usersArtistsRouter
         const { user_id, artist } = req.body;
         const newUserArtist = { user_id, artist };
 
+        // return an error if the required fields aren't in the request body
         for (const [key, value] of Object.entries(newUserArtist)) {
             if(value == null) {
                 logger.error(`'${key}' is required`);
@@ -74,6 +79,7 @@ usersArtistsRouter
             usersartists_id
         )
             .then(userArtist => {
+                // return an error if the user artist doesn't exist
                 if(!userArtist) {
                     logger.error(`User Artist with id ${usersartists_id} not found.`);
                     return res.status(404).json({

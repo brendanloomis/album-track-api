@@ -7,6 +7,7 @@ const AlbumsService = require('./albums-service');
 const albumsRouter = express.Router();
 const jsonParser = express.json();
 
+// serializes album information to protect from xss attacks
 const serializeAlbum = album => ({
     album_id: album.album_id,
     album_name: xss(album.album_name),
@@ -29,6 +30,7 @@ albumsRouter
         const { album_name, genre, artist } = req.body;
         const newAlbum ={ album_name, genre, artist };
 
+        // returns an error if a required key is missing
         for (const [key, value] of Object.entries(newAlbum)) {
             if (value == null) {
                 logger.error(`'${key} is required`);
@@ -62,6 +64,7 @@ albumsRouter
             album_id
         )
             .then(album => {
+                // return 404 error if album is not found
                 if (!album) {
                     logger.error(`Album with id ${album_id} not found`);
                     return res.status(404).json({
@@ -94,6 +97,7 @@ albumsRouter
         const albumToUpdate = { album_name, genre, artist };
         const { album_id } = req.params;
 
+        // return an error if body doesn't contain any required fields
         const numberOfValues = Object.values(albumToUpdate).filter(Boolean).length;
         if (numberOfValues === 0) {
             logger.error(`Invalid update without required fields`);

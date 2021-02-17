@@ -7,6 +7,7 @@ const UsersService = require('./users-service');
 const usersRouter = express.Router();
 const jsonParser = express.json();
 
+// serializes user information to protect from xss attacks
 const serializeUser = user => ({
     user_id: user.user_id,
     first_name: xss(user.first_name),
@@ -15,6 +16,7 @@ const serializeUser = user => ({
     password: xss(user.password)
 });
 
+// serializes username to protect from xss attacks
 const serializeUsername = user => ({
     username: xss(user.username)
 });
@@ -34,6 +36,7 @@ usersRouter
         const { first_name, last_name, username, password } = req.body;
         const newUser = { first_name, last_name, username, password };
 
+        // returns an error if required fields aren't in request body
         for (const [key, value] of Object.entries(newUser)) {
             if (value == null) {
                 logger.error(`'${key}' is required`);
@@ -57,11 +60,13 @@ usersRouter
             .catch(next);
     });
 
+// route to use for logging in a user
 usersRouter
     .route('/login')
     .post(jsonParser, (req, res, next) => {
         const { username, password } = req.body;
 
+        // returns an error if username or password aren't including in request body
         if (!username || !password) {
             logger.error(`'username' and 'password' are required`);
             return res.status(400).json({
@@ -74,13 +79,15 @@ usersRouter
             username
         )
             .then(user => {
+                // return an error if user doesn't exist
                 if (!user) {
                     logger.error(`User not found.`);
                     return res.status(404).json({
                         error: { message: `User doesn't exist`}
                     });
                 }
-        
+                
+                // return an error if the password isn't correct
                 if (user.password !== password) {
                     logger.error(`Incorrect password`);
                     return res.status(401).json({
@@ -94,13 +101,15 @@ usersRouter
                     last_name: xss(user.last_name),
                     username: xss(user.username)
                 };
-        
+
+                // return user info
                 return res.json(userInfo);
             })
             .catch(next);
 
     });
 
+// route to get all usernames in users table
 usersRouter
     .route('/usernames')
     .get((req, res, next) => {
@@ -123,6 +132,7 @@ usersRouter
             user_id
         )
             .then(user => {
+                // return a 404 error if user doesn't exist
                 if (!user) {
                     logger.error(`User with id ${user_id} not found.`);
                     return res.status(404)
@@ -156,6 +166,7 @@ usersRouter
         const userToUpdate = { first_name, last_name, username, password };
         const { user_id } = req.params;
 
+        // return an error if the request body doesn't contain any of the required fields
         const numberOfValues = Object.values(userToUpdate).filter(Boolean).length;
         if (numberOfValues === 0) {
             logger.error(`Invalid update without required fields`);

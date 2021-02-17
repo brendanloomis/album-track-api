@@ -7,6 +7,7 @@ const SongsService = require('./songs-service');
 const songsRouter = express.Router();
 const jsonParser = express.json();
 
+// serializes song information to protect from xss attacks
 const serializeSong = song => ({
     song_id: song.song_id,
     song_name: xss(song.song_name),
@@ -28,6 +29,7 @@ songsRouter
         const { song_name, album } = req.body;
         const newSong = { song_name, album };
 
+        // return an error if request doesn't contain the required fields
         for(const [key, value] of Object.entries(newSong)) {
             if (value == null) {
                 logger.error(`'${key}' is required`);
@@ -61,6 +63,7 @@ songsRouter
             song_id
         )
             .then(song => {
+                // return 404 error if song doesn't exist
                 if (!song) {
                     logger.error(`Song with id ${song_id} not found.`);
                     return res.status(404)
@@ -94,6 +97,7 @@ songsRouter
         const songToUpdate = { song_name, album };
         const { song_id } = req.params;
 
+        // return an error if request body doesn't contain any required fields
         const numberOfValues = Object.values(songToUpdate).filter(Boolean).length;
         if (numberOfValues === 0) {
             logger.error(`Invalid update without required fields`);
