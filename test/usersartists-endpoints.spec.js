@@ -116,52 +116,6 @@ describe('UsersArtists Endpoints', () => {
         });
     });
 
-    describe('GET /api/usersartists/:usersartists_id', () => {
-        context(`Given no usersartists`, () => {
-            it(`responds 404 when userartist doesn't exist`, () => {
-                const userArtistId = 123456;
-                return supertest(app)
-                    .get(`/api/usersartists/${userArtistId}`)
-                    .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                    .expect(404, {
-                        error: { message: `User Artist doesn't exist` }
-                    });
-            });
-        });
-
-        context(`Given there are usersartists in the database`, () => {
-            const testArtists = makeArtistsArray();
-            const testUsers = makeUsersArray();
-            const testUsersArtists = makeUsersArtistsArray();
-    
-            beforeEach('insert usersartists', () => {
-                return db
-                    .into('artists')
-                    .insert(testArtists)
-                    .then(() => {
-                        return db
-                            .into('users')
-                            .insert(testUsers)
-                            .then(() => {
-                                return db
-                                    .into('usersartists')
-                                    .insert(testUsersArtists);
-                            });
-                    });
-            });
-
-            it(`responds with 200 and the specified user artist`, () => {
-                const userArtistId = 2;
-                const expectedUserArtist = testUsersArtists[userArtistId - 1];
-
-                return supertest(app)
-                    .get(`/api/usersartists/${userArtistId}`)
-                    .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                    .expect(200, expectedUserArtist);
-            });
-        });
-    });
-
     describe('DELETE /api/usersartists/:usersartists_id', () => {
         context(`Given no usersartists`, () => {
             it(`responds with 404 when user artist doesn't exist`, () => {

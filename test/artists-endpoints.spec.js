@@ -49,13 +49,6 @@ describe(`Artists Endpoints`, () => {
                 .expect(401, { error: 'Unauthorized request' });
         });
 
-        it(`responds with 401 Unauthorized for DELETE /api/artists/:artist_id`, () => {
-            const artist = testArtists[1];
-            return supertest(app)
-                .delete(`/api/artists/${artist.artist_id}`)
-                .expect(401, { error: 'Unauthorized request' });
-        });
-
         it(`responds with 401 Unauthorized for PATCH /api/artists/:artist_id`, () => {
             const artist = testArtists[1];
             return supertest(app)
@@ -163,45 +156,6 @@ describe(`Artists Endpoints`, () => {
                     .expect(200)
                     .expect(res => {
                         expect(res.body.artist_name).to.eql(expectedArtist.artist_name);
-                    });
-            });
-        });
-    });
-
-    describe(`DELETE /api/artists/:artist_id`, () => {
-        context(`Given no artists`, () => {
-            it(`responds with 404 when artist doesn't exist`, () => {
-                return supertest(app)
-                    .delete(`/api/artists/123456`)
-                    .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                    .expect(404, {
-                        error: { message: `Artist doesn't exist` }
-                    });
-            });
-        });
-
-        context(`Given there are artists`, () => {
-            const testArtists = makeArtistsArray();
-
-            beforeEach('insert artists', () => {
-                return db
-                    .into('artists')
-                    .insert(testArtists);
-            });
-
-            it(`responds with 204 and removes artist`, () => {
-                const idToRemove = 2;
-                const expectedArtists = testArtists.filter(a => a.artist_id !== idToRemove);
-
-                return supertest(app)
-                    .delete(`/api/artists/${idToRemove}`)
-                    .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                    .expect(204)
-                    .then(() => {
-                        supertest(app)
-                            .get('/api/artists')
-                            .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                            .expect(expectedArtists);
                     });
             });
         });

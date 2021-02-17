@@ -79,19 +79,6 @@ albumsRouter
     .get((req, res) => {
         res.json(serializeAlbum(res.album));
     })
-    .delete((req, res, next) => {
-        const { album_id } = req.params;
-
-        AlbumsService.deleteAlbum(
-            req.app.get('db'),
-            album_id
-        )
-            .then(() => {
-                logger.info(`Album with id ${album_id} deleted.`);
-                res.status(204).end();
-            })
-            .catch(next);
-    })
     .patch(jsonParser, (req, res, next) => {
         const { album_name, genre, artist } = req.body;
         const albumToUpdate = { album_name, genre, artist };

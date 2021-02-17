@@ -92,9 +92,6 @@ usersAlbumsRouter
             })
             .catch(next);
     })
-    .get((req, res) => {
-        res.json(res.userAlbum);
-    })
     .delete((req, res, next) => {
         const { usersalbums_id } = req.params;
         

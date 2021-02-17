@@ -23,15 +23,6 @@ const serializeUsername = user => ({
 
 usersRouter
     .route('/')
-    .get((req, res, next) => {
-        UsersService.getAllUsers(
-            req.app.get('db')
-        )
-            .then(users => {
-                res.json(users.map(serializeUser));
-            })
-            .catch(next);
-    })
     .post(jsonParser, (req, res, next) => {
         const { first_name, last_name, username, password } = req.body;
         const newUser = { first_name, last_name, username, password };
@@ -118,70 +109,6 @@ usersRouter
         )
             .then(usernames => {
                 res.json(usernames.map(serializeUsername));
-            })
-            .catch(next);
-    })
-
-usersRouter
-    .route('/:user_id')
-    .all((req, res, next) => {
-        const { user_id } = req.params;
-
-        UsersService.getById(
-            req.app.get('db'),
-            user_id
-        )
-            .then(user => {
-                // return a 404 error if user doesn't exist
-                if (!user) {
-                    logger.error(`User with id ${user_id} not found.`);
-                    return res.status(404)
-                        .json({
-                            error: { message: `User doesn't exist` }
-                        });
-                }
-                res.user = user;
-                next();
-            })
-            .catch(next);
-    })
-    .get((req, res) => {
-        res.json(serializeUser(res.user));
-    })
-    .delete((req, res, next) => {
-        const { user_id } = req.params;
-
-        UsersService.deleteUser(
-            req.app.get('db'),
-            user_id
-        )
-            .then(() => {
-                logger.info(`User with id ${user_id} deleted.`);
-                res.status(204).end();
-            })
-            .catch(next);
-    })
-    .patch(jsonParser, (req, res, next) => {
-        const { first_name, last_name, username, password } = req.body;
-        const userToUpdate = { first_name, last_name, username, password };
-        const { user_id } = req.params;
-
-        // return an error if the request body doesn't contain any of the required fields
-        const numberOfValues = Object.values(userToUpdate).filter(Boolean).length;
-        if (numberOfValues === 0) {
-            logger.error(`Invalid update without required fields`);
-            return res.status(400).json({
-                error: { message: `Request body must contain either 'first_name', 'last_name', 'username', or 'password'`}
-            });
-        }
-
-        UsersService.updateUser(
-            req.app.get('db'),
-            user_id,
-            userToUpdate
-        )
-            .then(numRowsAffected => {
-                res.status(204).end();
             })
             .catch(next);
     });

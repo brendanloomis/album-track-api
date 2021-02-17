@@ -56,13 +56,6 @@ describe(`Albums endpoints`, () => {
                 .expect(401, { error: 'Unauthorized request' });
         });
 
-        it(`responds with 401 Unauthorized for DELETE /api/albums/:album_id`, () => {
-            const album = testAlbums[1];
-            return supertest(app)
-                .delete(`/api/albums/${album.album_id}`)
-                .expect(401, { error: 'Unauthorized request' });
-        });
-
         it(`responds with 401 Unauthorized for PATCH /api/albums/:album_id`, () => {
             const album = testAlbums[1];
             return supertest(app)
@@ -192,51 +185,6 @@ describe(`Albums endpoints`, () => {
                     .expect(res => {
                         expect(res.body.album_name).to.eql(expectedAlbum.album_name);
                         expect(res.body.genre).to.eql(expectedAlbum.genre);
-                    });
-            });
-        });
-    });
-
-    describe(`DELETE /api/albums/:album_id`, () => {
-        context(`Given no albums`, () => {
-            it(`responds with 404 when album doesn't exist`, () => {
-                return supertest(app)
-                    .delete(`/api/albums/123456`)
-                    .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                    .expect(404, {
-                        error: { message: `Album doesn't exist` }
-                    });
-            });
-        });
-
-        context(`Given there are albums`, () => {
-            const testArtists = makeArtistsArray();
-            const testAlbums = makeAlbumsArray();
-
-            beforeEach('insert albums', () => {
-                return db
-                    .into('artists')
-                    .insert(testArtists)
-                    .then(() => {
-                        return db
-                            .into('albums')
-                            .insert(testAlbums);
-                    });
-            });
-
-            it(`responds with 204 and removes the album`, () => {
-                const idToRemove = 2;
-                const expectedAlbums = testAlbums.filter(al => al.album_id !== idToRemove);
-
-                return supertest(app)
-                    .delete(`/api/albums/${idToRemove}`)
-                    .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                    .expect(204)
-                    .then(() => {
-                        supertest(app)
-                            .get(`/api/albums`)
-                            .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                            .expect(expectedAlbums);
                     });
             });
         });

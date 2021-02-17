@@ -21,12 +21,6 @@ const AlbumsService = {
             .first();
     },
 
-    deleteAlbum(knex, album_id) {
-        return knex('albums')
-            .where({ album_id })
-            .delete();
-    },
-
     updateAlbum(knex, album_id, newAlbumFields) {
         return knex('albums')
             .where({ album_id })

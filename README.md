@@ -1,26 +1,65 @@
-# Express Boilerplate!
+# Album Track API
+https://album-track.vercel.app/
 
-This is a boilerplate project used for starting new projects!
+API for the Album Track.
 
-## Set up
+## Client Repo
+https://github.com/brendanloomis/album-track/
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+## API Endpoints
+### API URL
+https://album-track-api.herokuapp.com/api
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW_PROJECTS_NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+### GET
+* '/artists' get all artists
+* '/artists/:artist_id' get a specific artist
+* '/albums' get all albums
+* '/albums/:album_id' get a specific album
+* '/songs' get all songs
+* '/songs/:song_id' get a specific song
+* '/users/usernames' get all usernames
+* '/usersalbums' Parameter: userId (number). Get all albums for a specific user
+* '/usersartists' Parameter: userId (number). Get all artists for a specific user
 
-## Scripts
+### POST 
+* '/users' adds a user
+* '/users/login' used for loggin in
+* '/artists' adds an artist
+* '/albums' adds an album
+* '/songs' adds a song
+* '/usersalbums' adds a user album
+* '/usersartists' adds a user artist
 
-Start the application  `npm start`
+### DELETE
+* '/usersalbums/:usersalbums_id' deletes a user album
+* '/usersartists/:usersartists_id' deletes a user artist
+* '/songs/:song_id' deletes a song
 
-Start nodemon for the application `npm run dev`
+### PATCH
+* '/artists/:artist_id' updates an artist
+* '/albums/:album_id' updates an album
+* '/songs/:song_id' updates a song
 
-Run the tests `npm test`
+## Summary 
 
-## Deploying
+![landing](images/landing.png)
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+Album Track is an application that can be used for music collectors to keep track of the albums that they own. Users can add artists, albums, and songs to their collection. Users can also edit information for the artists, albums, and songs, and delete them from their collection. There is a demo account to try the app out (username: demo, password: password123).
+
+## Technology Used
+* Front-End: 
+    * React
+    * JavaScript
+    * HTML
+    * CSS
+    * Jest
+    * Deployed with Vercel
+
+* Back-End:
+    * Node
+    * Express
+    * PostgreSQL
+    * Mocha
+    * Chai
+    * Supertest
+    * Deployed with Heroku

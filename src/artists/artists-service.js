@@ -21,12 +21,6 @@ const ArtistsService = {
             .first();
     },
 
-    deleteArtist(knex, artist_id) {
-        return knex('artists')
-            .where({ artist_id })
-            .delete();
-    },
-
     updateArtist(knex, artist_id, newArtistFields) {
         return knex('artists')
             .where({ artist_id })

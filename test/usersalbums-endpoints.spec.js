@@ -133,58 +133,6 @@ describe('UsersAlbums Endpoints', () => {
         });
     });
 
-    describe(`GET /api/usersalbums/:usersalbums_id`, () => {
-        context(`Given no usersalbums`, () => {
-            it(`responds 404 when useralbum doesn't exist`, () => {
-                const userAlbumId = 123456;
-                return supertest(app)
-                    .get(`/api/usersalbums/${userAlbumId}`)
-                    .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                    .expect(404, {
-                        error: { message: `User Album doesn't exist` }
-                    });
-            });
-        });
-
-        context(`Given there are usersalbums in the database`, () => {
-            const testArtists = makeArtistsArray();
-            const testUsers = makeUsersArray();
-            const testAlbums = makeAlbumsArray();
-            const testUsersAlbums = makeUsersAlbumsArray();
-
-            beforeEach('insert usersalbums', () => {
-                return db
-                    .into('artists')
-                    .insert(testArtists)
-                    .then(() => {
-                        return db
-                            .into('albums')
-                            .insert(testAlbums)
-                            .then(() => {
-                                return db
-                                    .into('users')
-                                    .insert(testUsers)
-                                    .then(() => {
-                                        return db
-                                            .into('usersalbums')
-                                            .insert(testUsersAlbums);
-                                    });
-                            });
-                    });
-            });
-
-            it(`responds with 200 and the specified user album`, () => {
-                const userAlbumId = 2;
-                const expectedUserAlbum = testUsersAlbums[userAlbumId - 1];
-
-                return supertest(app)
-                    .get(`/api/usersalbums/${userAlbumId}`)
-                    .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                    .expect(200, expectedUserAlbum);
-            });
-        });
-    });
-
     describe(`DELETE /api/usersalbums/:usersalbums_id`, () => {
         context(`Given no usersalbums`, () => {
             it(`responds with 404 when user album doesn't exist`, () => {

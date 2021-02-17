@@ -91,9 +91,6 @@ usersArtistsRouter
             })
             .catch(next);
     })
-    .get((req, res) => {
-        res.json(res.userArtist);
-    })
     .delete((req, res, next) => {
         const { usersartists_id } = req.params;
         

@@ -76,19 +76,6 @@ artistsRouter
     .get((req, res, next) => {
         res.json(serializeArtist(res.artist));
     })
-    .delete((req, res, next) => {
-        const { artist_id } = req.params;
-
-        ArtistsService.deleteArtist(
-            req.app.get('db'),
-            artist_id
-        )
-            .then(() => {
-                logger.info(`Artist with id ${artist_id} deleted.`);
-                res.status(204).end();
-            })
-            .catch(next);
-    })
     .patch(jsonParser, (req, res, next) => {
         const { artist_name } = req.body;
         const artistToUpdate = { artist_name };
