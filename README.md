@@ -62,4 +62,4 @@ Album Track is an application that can be used for music collectors to keep trac
     * Mocha
     * Chai
     * Supertest
-    * Deployed with Heroku
+    * Deployed with Fly.io
